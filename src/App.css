@@ -1,0 +1,41 @@
+/* Grid layout for displaying product cards */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+/* Styling for each product card */
+.product-card {
+  border-radius: 12px;
+  padding: 15px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Bold text styling for product titles and descriptions */
+.product-card p, 
+.product-card h3 {
+  color: black;
+  font-weight: bold;
+}
+
+/* Product image settings to maintain aspect ratio */
+.product-card img {
+  max-width: 100%;
+  height: 200px;
+  object-fit: contain;
+}
+
+/* Basic button styling with smooth scaling effect on hover */
+button {
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+/* Scale up button slightly on hover */
+button:hover {
+  transform: scale(1.05);
+}

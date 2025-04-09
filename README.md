@@ -1,13 +1,7 @@
 # React E-Commerce WebApp
-
-A simple e-commerce web application built with React, Redux Toolkit, and React Query. Developed as the Front-End Specialization Project for Coding Temple.
-
-## Project Structure
-
-This document explains the purpose and functionality of each file in the project for presentation purposes:
+Front-End Specialization Project for Coding Temple.
 
 ### Root Files
-
 - **index.js**: The entry point of our application
   - Creates the React root using modern React 18 createRoot API
   - Renders the App component wrapped in StrictMode
@@ -45,19 +39,3 @@ This document explains the purpose and functionality of each file in the project
   - Provides checkout functionality
   - Shows empty cart message when appropriate
   - Connects to Redux store to access and update cart state
-
-## Data Flow
-
-1. Products are fetched in Home.js using React Query
-2. User selects a category to filter products
-3. User clicks "Add to Cart" on a product
-4. Redux action is dispatched to update cart state
-5. Cart.js reflects updated items from Redux store
-6. User can remove items or checkout, updating the Redux store
-
-## Technologies Used
-
-- **React**: UI library for building component-based interfaces
-- **Redux Toolkit**: Simplified state management
-- **React Query**: Data fetching with automatic caching
-- **FakeStore API**: External API providing product data

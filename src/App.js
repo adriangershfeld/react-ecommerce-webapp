@@ -13,7 +13,7 @@ function App() {
   return (
     // Provide Redux store to all components
     <Provider store={store}>
-      {/* Provide react-query context */}
+      {/* React Query */}
       <QueryClientProvider client={queryClient}>
         <div className="App">
           {/* Render Home component */}
@@ -27,3 +27,5 @@ function App() {
 }
 
 export default App;
+
+// wraps everything in Redux and React Query; renders the Home and Cart components

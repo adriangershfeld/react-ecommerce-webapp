@@ -1,10 +1,16 @@
-// Import configureStore from Redux Toolkit to create the Redux store
-import { configureStore } from '@reduxjs/toolkit';
-import cartReducer from './cartSlice';
+// Import React, DOM tools, CSS, and App component
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
 
-// Redux store configuration using Redux Toolkit
-export const store = configureStore({
-  reducer: {
-    cart: cartReducer 
-  } // 'cart' becomes this slice's key in the state object + determines how data is accessed in state tree (state.cart)
-});
+// Create a root DOM node and render the main App component in strict mode (Mounts App into id=root)
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// mounts the app using React 18’s createRoot
+// App.js is the main layout

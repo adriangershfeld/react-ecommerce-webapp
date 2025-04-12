@@ -2,8 +2,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { store } from './store';
-import Home from './components/Home';
-import Cart from './components/Cart';
+import Home from './components/Home.tsx'; // updated for tsx
+import Cart from './components/Cart.tsx';
 import './App.css';
 
 // Initialize react-query client

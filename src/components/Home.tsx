@@ -3,6 +3,11 @@ import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
 import { addToCart, Product } from '../store.ts';
 
+/**
+ * Fetches products from the API based on selected category
+ * @param category - The product category to filter by (empty string for all)
+ * @returns Promise containing array of Product objects
+ */
 const fetchProducts = async (category: string): Promise<Product[]> => {
   const baseUrl = 'https://fakestoreapi.com/products';
   const url = category ? `${baseUrl}/category/${category}` : baseUrl;
@@ -10,19 +15,29 @@ const fetchProducts = async (category: string): Promise<Product[]> => {
   return response.json();
 };
 
+/**
+ * Fetches available product categories from the API
+ * @returns Promise containing array of category strings
+ */
 const fetchCategories = async (): Promise<string[]> => {
   const response = await fetch('https://fakestoreapi.com/products/categories');
   return response.json();
 };
 
+/**
+ * Home Component - Main product listing page with category filtering
+ * Uses React Query for data fetching and caching
+ */
 const Home: React.FC = () => {
+  // State for tracking selected category filter
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const dispatch = useDispatch();
 
-  // Grabs category list from API and handles caching/loading internally
+  // Query to fetch and cache categories
   const { data: categories } = useQuery<string[]>('categories', fetchCategories);
 
-  // Dynamically fetches products depending on the selected category
+  // Query to fetch products based on selected category
+  // Will automatically refetch when selectedCategory changes
   const {
     data: products,
     isLoading,
@@ -32,17 +47,22 @@ const Home: React.FC = () => {
     () => fetchProducts(selectedCategory)
   );
 
-  // Adds product to cart via Redux dispatch
+  /**
+   * Handles adding a product to the cart
+   * Dispatches Redux action with product data
+   */
   const handleAddToCart = (product: Product) => {
-    dispatch(addToCart(product)); // Now properly typed with Product from store
+    dispatch(addToCart(product));
   };
 
+  // Loading state display
   if (isLoading) return (
     <div style={{ padding: '20px', backgroundColor: 'white', color: 'black' }}>
       Loading products...
     </div>
   );
 
+  // Error state display
   if (error) return (
     <div style={{ padding: '20px', backgroundColor: 'white', color: 'black' }}>
       Error loading products: {error.message}
@@ -51,7 +71,7 @@ const Home: React.FC = () => {
 
   return (
     <div style={{ padding: '20px', backgroundColor: 'white', color: 'black' }}>
-      {/* Category filter dropdown (auto-populated) */}
+      {/* Category dropdown filter */}
       <select
         value={selectedCategory}
         onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
@@ -72,12 +92,13 @@ const Home: React.FC = () => {
         ))}
       </select>
 
-      {/* Product cards displayed in responsive grid */}
+      {/* Product grid - responsive layout with auto-sizing columns */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
         gap: '20px'
       }}>
+        {/* Map through products and render product cards */}
         {products?.map((product) => (
           <div
             key={product.id}
@@ -87,6 +108,7 @@ const Home: React.FC = () => {
               textAlign: 'center'
             }}
           >
+            {/* Product image with fallback for broken images */}
             <img
               src={product.image}
               alt={product.title}
@@ -102,6 +124,7 @@ const Home: React.FC = () => {
             />
             <h3>{product.title}</h3>
             <p>${product.price}</p>
+            {/* Add to cart button - dispatches Redux action */}
             <button
               onClick={() => handleAddToCart(product)}
               style={{

@@ -1,14 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
-import { addToCart } from '../store/cartSlice';
-
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  image: string;
-}
+import { addToCart, Product } from '../store.ts';
 
 const fetchProducts = async (category: string): Promise<Product[]> => {
   const baseUrl = 'https://fakestoreapi.com/products';
@@ -41,7 +34,7 @@ const Home: React.FC = () => {
 
   // Adds product to cart via Redux dispatch
   const handleAddToCart = (product: Product) => {
-    dispatch(addToCart(product));
+    dispatch(addToCart(product)); // Now properly typed with Product from store
   };
 
   if (isLoading) return (

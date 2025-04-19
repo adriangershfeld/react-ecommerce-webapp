@@ -1,3 +1,6 @@
+### WIP 
+
+
 # React E-Commerce WebApp
 Front-End Specialization Project for Coding Temple.
 

@@ -1,6 +1,5 @@
-/* ===================== */
-/* BASE STYLES & RESETS  */
-/* ===================== */
+/* global styles */
+
 :root {
   --color-background: #f5f5f5;
   --color-text-primary: #333;
@@ -32,9 +31,7 @@ body {
   line-height: 1.6;
 }
 
-/* ===================== */
-/* IMAGE DEFAULTS        */
-/* ===================== */
+
 img {
   max-width: 100%;
   height: auto;

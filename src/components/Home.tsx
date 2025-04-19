@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
 import { addToCart, Product } from '../store.ts';
+import './Home.css';
 
 /**
  * Fetches products from the API based on selected category
@@ -124,19 +125,24 @@ const Home: React.FC = () => {
             />
             <h3>{product.title}</h3>
             <p>${product.price}</p>
+            {/* Added product details */}
+            {product.description && (
+              <p style={{ fontSize: '0.9rem', color: '#666', margin: '8px 0' }}>
+                {product.description.slice(0, 128)}...
+              </p>
+            )}
+            {product.rating && (
+              <p style={{ fontSize: '0.9rem', color: '#444' }}>
+                Rating: {product.rating.rate}/5 ({product.rating.count} reviews)
+              </p>
+            )}
             {/* Add to cart button - dispatches Redux action */}
             <button
-              onClick={() => handleAddToCart(product)}
-              style={{
-                backgroundColor: 'green',
-                color: 'white',
-                border: 'none',
-                padding: '10px 15px',
-                cursor: 'pointer'
-              }}
-            >
-              Add to Cart
-            </button>
+  onClick={() => handleAddToCart(product)}
+  className="add-to-cart-btn"
+>
+  Add to Cart
+</button>
           </div>
         ))}
       </div>

@@ -37,10 +37,6 @@
     transition: opacity 0.3s ease;
   }
   
-  .remove-btn:hover {
-    opacity: 0.9;
-  }
-  
   .checkout-btn {
     background-color: #27ae60;
     color: white;
@@ -59,4 +55,14 @@
     margin-top: 25px;
     padding-top: 15px;
     border-top: 1px solid #ddd;
+  }
+
+  .remove-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+  
+  .checkout-btn:hover {
+    transform: scale(1.02);
+    background-color: #219651;
   }

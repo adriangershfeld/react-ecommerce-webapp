@@ -30,7 +30,7 @@ const Cart: React.FC = () => {
     alert('Checkout successful! Cart cleared.');
   };
 
-  // Empty cart display
+  // Empty cart display (FIX SPACING)
   if (cartItems.length === 0) {
     return (
       <div className="cart-empty">
@@ -39,8 +39,8 @@ const Cart: React.FC = () => {
       </div>
     );
   }
-
-  return (
+ // fix this css migrate
+  return ( 
     <div className="cart-container">
       <h2>Shopping Cart</h2>
       {/* Map through and render each cart item */}
@@ -58,7 +58,7 @@ const Cart: React.FC = () => {
           />
           <div className="cart-item-details">
             <h3>{item.title}</h3>
-            {/* Quantity selector - dispatches updateQuantity action on change */}
+             {/* Quantity Selector */}
             <div className="quantity-control">
               <label>Quantity: </label>
               <select
@@ -68,15 +68,15 @@ const Cart: React.FC = () => {
                   quantity: Number(e.target.value)
                 }))}
                 className="quantity-select"
-              >
+              > {/* rewrite class for dropdown to fix looping through array past items */}
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                   <option key={num} value={num}>{num}</option>
-                ))}
-              </select>
+                ))} 
+              </select> 
             </div>
-            {/* Calculated price based on quantity */}
+            {/* Price Calculation */}
             <p>Price: ${(item.price * item.quantity).toFixed(2)}</p>
-            {/* Remove item button - dispatches removeFromCart action */}
+            {/* Remove item buttom (removeFromCart action) */}
             <button
               onClick={() => dispatch(removeFromCart(item.id))}
               className="remove-btn"
@@ -90,7 +90,7 @@ const Cart: React.FC = () => {
       {/* Cart summary and checkout section */}
       <div className="cart-summary">
         <h3>Total Items: {cartItems.length}</h3>
-        <h3>Total Price: ${totalPrice.toFixed(2)}</h3>
+        <h3>Total Price: ${totalPrice}</h3>
         <button
           onClick={handleCheckout}
           className="checkout-btn"

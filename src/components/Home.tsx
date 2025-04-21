@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query'; // Updated import for Vite compatibility
 import { useDispatch } from 'react-redux';
-import { addToCart } from '../store/cartSlice';
+import { addToCart, Product } from '../store.ts';
+import './Home.css';
 
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  image: string;
-}
-
+/**
+ * Fetches products from the API based on selected category
+ * @param category - The product category to filter by (empty string for all)
+ * @returns Promise containing array of Product objects
+ */
 const fetchProducts = async (category: string): Promise<Product[]> => {
   const baseUrl = 'https://fakestoreapi.com/products';
   const url = category ? `${baseUrl}/category/${category}` : baseUrl;
@@ -17,39 +16,57 @@ const fetchProducts = async (category: string): Promise<Product[]> => {
   return response.json();
 };
 
+/**
+ * Fetches available product categories from the API
+ * @returns Promise containing array of category strings
+ */
 const fetchCategories = async (): Promise<string[]> => {
   const response = await fetch('https://fakestoreapi.com/products/categories');
   return response.json();
 };
 
+/**
+ * Home Component - Main product listing page with category filtering
+ * Uses React Query for data fetching and caching
+ */
 const Home: React.FC = () => {
+  // State for tracking selected category filter
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const dispatch = useDispatch();
 
-  // Grabs category list from API and handles caching/loading internally
-  const { data: categories } = useQuery<string[]>('categories', fetchCategories);
+  // Query to fetch and cache categories - updated to v4 syntax
+  const { data: categories } = useQuery<string[]>({
+    queryKey: ['categories'],
+    queryFn: fetchCategories
+  });
 
-  // Dynamically fetches products depending on the selected category
+  // Query to fetch products based on selected category - updated to v4 syntax
+  // Will automatically refetch when selectedCategory changes
   const {
     data: products,
     isLoading,
     error
-  } = useQuery<Product[], Error>(
-    ['products', selectedCategory],
-    () => fetchProducts(selectedCategory)
-  );
+  } = useQuery<Product[], Error>({
+    queryKey: ['products', selectedCategory],
+    queryFn: () => fetchProducts(selectedCategory)
+  });
 
-  // Adds product to cart via Redux dispatch
+  /**
+   * Handles adding a product to the cart
+   * Dispatches Redux action with product data
+   */
   const handleAddToCart = (product: Product) => {
     dispatch(addToCart(product));
   };
 
+  // Loading state display
   if (isLoading) return (
     <div style={{ padding: '20px', backgroundColor: 'white', color: 'black' }}>
       Loading products...
     </div>
   );
 
+  // Error state display
   if (error) return (
     <div style={{ padding: '20px', backgroundColor: 'white', color: 'black' }}>
       Error loading products: {error.message}
@@ -58,7 +75,7 @@ const Home: React.FC = () => {
 
   return (
     <div style={{ padding: '20px', backgroundColor: 'white', color: 'black' }}>
-      {/* Category filter dropdown (auto-populated) */}
+      {/* Category dropdown filter */}
       <select
         value={selectedCategory}
         onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
@@ -79,12 +96,13 @@ const Home: React.FC = () => {
         ))}
       </select>
 
-      {/* Product cards displayed in responsive grid */}
+      {/* Product grid - responsive layout with auto-sizing columns */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
         gap: '20px'
       }}>
+        {/* Map through products and render product cards */}
         {products?.map((product) => (
           <div
             key={product.id}
@@ -94,6 +112,7 @@ const Home: React.FC = () => {
               textAlign: 'center'
             }}
           >
+            {/* Product image with fallback for broken images */}
             <img
               src={product.image}
               alt={product.title}
@@ -109,15 +128,21 @@ const Home: React.FC = () => {
             />
             <h3>{product.title}</h3>
             <p>${product.price}</p>
+            {/* Added product details */}
+            {product.description && (
+              <p style={{ fontSize: '0.9rem', color: '#666', margin: '8px 0' }}>
+                {product.description.slice(0, 128)}...
+              </p>
+            )}
+            {product.rating && (
+              <p style={{ fontSize: '0.9rem', color: '#444' }}>
+                Rating: {product.rating.rate}/5 ({product.rating.count} reviews)
+              </p>
+            )}
+            {/* Add to cart button - dispatches Redux action */}
             <button
               onClick={() => handleAddToCart(product)}
-              style={{
-                backgroundColor: 'green',
-                color: 'white',
-                border: 'none',
-                padding: '10px 15px',
-                cursor: 'pointer'
-              }}
+              className="add-to-cart-btn"
             >
               Add to Cart
             </button>

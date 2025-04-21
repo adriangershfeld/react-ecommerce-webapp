@@ -1,86 +1,85 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../store';
-import { removeFromCart, clearCart } from '../store/cartSlice';
+import { 
+  RootState, 
+  removeFromCart, 
+  clearCart, 
+  updateQuantity, 
+  CartItem 
+} from '../store.ts';
+import './Cart.css';
 
-interface CartItem {
-  id: number;
-  title: string;
-  image: string;
-  price: number;
-  quantity: number;
-}
-
+/**
+ * Cart Component - Displays the user's shopping cart and handles cart interactions
+ * Uses Redux for state management and dispatch actions
+ */
 const Cart: React.FC = () => {
-  // Access cart state from Redux
+  // Access cart items from Redux store
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
 
-  // Calculate the total cart value
+  // Calculate the total price of all items in cart
   const totalPrice = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
 
-  // Clear the cart and notify the user
+  // Handler for checkout process
   const handleCheckout = () => {
     dispatch(clearCart());
     alert('Checkout successful! Cart cleared.');
   };
 
-  // Message for empty cart state
+  // Empty cart display (FIX SPACING)
   if (cartItems.length === 0) {
     return (
-      <div style={{ padding: '20px', backgroundColor: 'white', color: 'black' }}>
+      <div className="cart-empty">
         <h2>Shopping Cart</h2>
         <p>Your cart is empty</p>
       </div>
     );
   }
-
-  // Display cart items and total
-  return (
-    <div style={{ padding: '20px', backgroundColor: 'white', color: 'black' }}>
+ // fix this css migrate
+  return ( 
+    <div className="cart-container">
       <h2>Shopping Cart</h2>
+      {/* Map through and render each cart item */}
       {cartItems.map((item: CartItem) => (
-        <div
-          key={item.id}
-          className="cart-item"
-          style={{
-            display: 'flex',
-            marginBottom: '10px',
-            border: '1px solid #ddd',
-            padding: '10px'
-          }}
-        >
-          {/* Product thumbnail */}
+        <div key={item.id} className="cart-item">
+          {/* Product image with fallback for broken images */}
           <img
             src={item.image}
             alt={item.title}
-            style={{
-              width: '100px',
-              height: '100px',
-              objectFit: 'contain',
-              marginRight: '10px'
-            }}
+            className="cart-item-image"
             onError={(e) => {
               (e.target as HTMLImageElement).onerror = null;
               (e.target as HTMLImageElement).src = 'https://via.placeholder.com/100';
             }}
           />
-          <div>
-            {/* Item info and controls */}
+          <div className="cart-item-details">
             <h3>{item.title}</h3>
-            <p>Quantity: {item.quantity}</p>
+             {/* Quantity Selector */}
+            <div className="quantity-control">
+              <label>Quantity: </label>
+              <select
+                value={item.quantity}
+                onChange={(e) => dispatch(updateQuantity({
+                  id: item.id,
+                  quantity: Number(e.target.value)
+                }))}
+                className="quantity-select"
+              > {/* rewrite class for dropdown to fix looping through array past items */}
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                  <option key={num} value={num}>{num}</option>
+                ))} 
+              </select> 
+            </div>
+            {/* Price Calculation */}
             <p>Price: ${(item.price * item.quantity).toFixed(2)}</p>
+            {/* Remove item buttom (removeFromCart action) */}
             <button
               onClick={() => dispatch(removeFromCart(item.id))}
-              style={{
-                backgroundColor: 'red',
-                color: 'white',
-                border: 'none',
-                padding: '5px 10px'
-              }}
+              className="remove-btn"
             >
               Remove
             </button>
@@ -88,18 +87,13 @@ const Cart: React.FC = () => {
         </div>
       ))}
 
-      {/* Totals and checkout */}
-      <div>
+      {/* Cart summary and checkout section */}
+      <div className="cart-summary">
         <h3>Total Items: {cartItems.length}</h3>
-        <h3>Total Price: ${totalPrice.toFixed(2)}</h3>
+        <h3>Total Price: ${totalPrice}</h3>
         <button
           onClick={handleCheckout}
-          style={{
-            backgroundColor: 'green',
-            color: 'white',
-            border: 'none',
-            padding: '10px 20px'
-          }}
+          className="checkout-btn"
         >
           Checkout
         </button>
